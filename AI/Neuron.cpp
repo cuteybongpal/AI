@@ -11,8 +11,11 @@ void Neuron::setValue()
 	{
 		sum += *it;
 	}
-	
+	float value = std::tanh(sum);
+
+	this -> value = value;
 }
+
 Neuron::Neuron() {
 	this->prevalue = new list<float>();
 }

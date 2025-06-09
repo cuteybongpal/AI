@@ -9,7 +9,7 @@ public:
 
 	float strength;
 
-	Relation(Neuron* items1, Neuron* items2);
-
+	Relation(Neuron* items1, Neuron* items2) : item1(items1), item2(items2);
+	void SendValue();
 };
 
