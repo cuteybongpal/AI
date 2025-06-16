@@ -1,15 +1,16 @@
 #pragma once
 #include "Neuron.h"
+#include <memory>
 
 class Relation
 {
 public:
-	Neuron* item1;
-	Neuron* item2;
+	std::shared_ptr<Neuron> item1;
+	std::shared_ptr<Neuron> item2;
 
 	float strength;
 
-	Relation(Neuron* items1, Neuron* items2) : item1(items1), item2(items2);
+	Relation(shared_ptr<Neuron> items1, shared_ptr<Neuron> items2);
 	void SendValue();
 };
 

@@ -1,18 +1,24 @@
-﻿// AI.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include "Neuron.h"
+#include "Relation.h"
+#include <memory>
+
+using namespace std;
+
 int main()
 {
-    Neuron* n1 = new Neuron();
-    Neuron* n2 = new Neuron();
-
-    n1->setValue(12.0f);
-    n2->setValue(5.0f);
+    shared_ptr<Neuron> n1 = make_shared<Neuron>();
+    shared_ptr<Neuron> n2 = make_shared<Neuron>();
 
 
-    std::cout << n1->value << std::endl;
+    Relation* r = new Relation(n1, n2);
+
+    n1->value = 0.5f;
+    r->strength = 0.5f;
+    r->SendValue();
+    n2->setValue();
+
+    std::cout << n2->value << std::endl;
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
