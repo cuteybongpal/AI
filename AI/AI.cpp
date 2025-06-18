@@ -2,6 +2,8 @@
 #include "Neuron.h"
 #include "Relation.h"
 #include <memory>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace std;
 

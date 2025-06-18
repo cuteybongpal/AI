@@ -128,10 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AI.cpp" />
+    <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="Neuron.cpp" />
     <ClCompile Include="Relation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="Neuron.h" />
     <ClInclude Include="Relation.h" />
   </ItemGroup>
