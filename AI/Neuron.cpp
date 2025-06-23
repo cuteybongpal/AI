@@ -7,7 +7,7 @@ void Neuron::setValue()
 	float sum = 0;
 	list<float>::iterator it;
 	
-	for (it = this->prevalues->begin(); it != this->prevalues->end(); it++)
+	for (it = prevalues->begin(); it != prevalues->end(); it++)
 	{
 		sum += *it;
 	}

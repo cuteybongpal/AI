@@ -12,5 +12,7 @@ public:
 
 	Relation(shared_ptr<Neuron> items1, shared_ptr<Neuron> items2);
 	void SendValue();
+
+	void ChangeStrength(float errRating);
 };
 

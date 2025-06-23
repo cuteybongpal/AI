@@ -4,25 +4,76 @@
 #include <memory>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <vector>
 
 using namespace std;
 
+list<shared_ptr<Neuron>> inputLayer = list<shared_ptr<Neuron>>();
+list<shared_ptr<Neuron>> hiddenLayer1 = list<shared_ptr<Neuron>>();
+list<shared_ptr<Neuron>> hiddenLayer2 = list<shared_ptr<Neuron>>();
+list<shared_ptr<Neuron>> outputLayer = list<shared_ptr<Neuron>>();
+
+list<Relation> relations1 = list<Relation>();
+list<Relation> relations2 = list<Relation>();
+list<Relation> relations3 = list<Relation>();
+
 int main()
 {
-    shared_ptr<Neuron> n1 = make_shared<Neuron>();
-    shared_ptr<Neuron> n2 = make_shared<Neuron>();
+    //계층 별로 레이어 생성하기
+    for (int i = 0; i < 28; i++)
+        for (int j = 0; j < 28; j++)
+            inputLayer.push_back(make_shared<Neuron>());
+
+    for (int i = 0; i < 15; i++)
+        hiddenLayer1.push_back(make_shared<Neuron>());
+
+    for (int i = 0; i < 15; i++)
+        hiddenLayer2.push_back(make_shared<Neuron>());
+
+    for (int i = 0; i < 10; i++)
+    outputLayer.push_back(make_shared<Neuron>());
+
+    //Relation 연결
+    //todo : 가중치 넣어주기
+    list<shared_ptr<Neuron>>::iterator iter1;
+
+    for (iter1 = inputLayer.begin(); iter1 != inputLayer.end(); iter1++)
+    {
+        list<shared_ptr<Neuron>>::iterator iter2;
+
+        for (iter2 = hiddenLayer1.begin(); iter2 != hiddenLayer1.end(); iter2++)
+            relations1.push_back(Relation(*iter1, *iter2));
+    }
 
 
-    Relation* r = new Relation(n1, n2);
+    for (iter1 = hiddenLayer1.begin(); iter1 != hiddenLayer1.end(); iter1++)
+    {
+        list<shared_ptr<Neuron>>::iterator iter2;
 
-    n1->value = 0.5f;
-    r->strength = 0.5f;
-    r->SendValue();
-    n2->setValue();
+        for (iter2 = hiddenLayer2.begin(); iter2 != hiddenLayer2.end(); iter2++)
+            relations2.push_back(Relation(*iter1, *iter2));
+    }
 
-    std::cout << n2->value << std::endl;
+    for (iter1 = hiddenLayer2.begin(); iter1 != hiddenLayer2.end(); iter1++)
+    {
+        list<shared_ptr<Neuron>>::iterator iter2;
+
+        for (iter2 = outputLayer.begin(); iter2 != outputLayer.end(); iter2++)
+            relations3.push_back(Relation(*iter1, *iter2));
+    }
 }
 
+// 고민점 : 아예 이 함수를 Relation 클래스에 포함할까 고민중임
+vector<float> LoadStrength(int layerIndex, int relationIndex)
+{
+    //todo : 저장된 가중치 가져오기
+    // 가중치는 strengths > Layer? <- 인덱스 번호 안에 있음   
+}
+
+void SaveStrength(int layerIndex, int relationIndex) 
+{
+    //todo : 학습 후 바뀐 가중치를 바꾸기
+}
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
 // 프로그램 디버그: <F5> 키 또는 [디버그] > [디버깅 시작] 메뉴
 
