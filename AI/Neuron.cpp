@@ -1,6 +1,9 @@
 #include "Neuron.h"
 #include <cmath>
+#include <list>
+#include <memory>
 
+using namespace std;
 
 void Neuron::setValue()
 {
@@ -11,13 +14,15 @@ void Neuron::setValue()
 	{
 		sum += *it;
 	}
-	float value = std::tanh(sum);
+	float value = tanh(sum);
 
 	this -> value = value;
 }
 
 Neuron::Neuron() {
-	this->prevalues = new list<float>();
+	prevalues = new list<float>();
+	Backrelation = make_shared<list<shared_ptr<Relation>>>();
+	Forrelation = make_shared<list<shared_ptr<Relation>>>();
 	prevalue = 0;
 	value = 0;
 }

@@ -1,6 +1,7 @@
 #include "Relation.h"
 #include <memory>
 #include "Consts.h"
+#include "Neuron.h"
 
 Relation::Relation(shared_ptr<Neuron> items1, shared_ptr<Neuron> items2) {
 	item1 = items1;

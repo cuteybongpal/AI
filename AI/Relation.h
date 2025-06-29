@@ -1,12 +1,14 @@
 #pragma once
-#include "Neuron.h"
 #include <memory>
+
+using namespace std;
+class Neuron;
 
 class Relation
 {
 public:
-	std::shared_ptr<Neuron> item1;
-	std::shared_ptr<Neuron> item2;
+	shared_ptr<Neuron> item1;
+	shared_ptr<Neuron> item2;
 
 	float strength;
 
@@ -15,4 +17,3 @@ public:
 
 	void ChangeStrength(float errRating);
 };
-

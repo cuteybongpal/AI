@@ -9,7 +9,7 @@ class Layer
 {
 public:
 	list<shared_ptr<Neuron>> Neurons;
+
 private:
 	int layerIndex;
 };
-

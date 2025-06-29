@@ -3,5 +3,5 @@
 #include <string>
 
 namespace ImageLoader {
-	std::vector<float> LoadPNG(std::string path);
+	std::vector<float> LoadPNG(char* path);
 }
