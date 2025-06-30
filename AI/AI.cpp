@@ -27,6 +27,7 @@ vector<int> answers = vector<int>();
 void Setup();
 void classifyNumber(const char* path);
 float getAccuracy();
+void back(int answer);
 
 int main()
 {
@@ -111,7 +112,7 @@ void Setup()
         }
     }
 }
-
+//순전파
 void classifyNumber(const char* path)
 {
     vector<float> imageVector = ImageLoader::LoadPNG(path);
@@ -158,6 +159,33 @@ void classifyNumber(const char* path)
     }
 
 }
+
 float getAccuracy() {
     return 0;
+}
+
+//역전파
+//살려줘..
+void back(int answer)
+{
+    list<shared_ptr<Neuron>>::iterator iter1;
+    int index = 0;
+    for (iter1 = outputLayer.begin(); iter1 != outputLayer.end(); iter1++)
+    {
+        float errorRating;
+        if (index == answer)
+            errorRating = iter1->get()->value - 1;
+        else
+            errorRating = iter1->get()->value;
+        index++;
+
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Backrelation->begin(); iter2 != selectedNeuron->Backrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedRelation = *iter2;
+            selectedRelation->ChangeStrength(errorRating * selectedRelation -> strength);
+        }
+    }
 }
