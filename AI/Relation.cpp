@@ -8,10 +8,11 @@ Relation::Relation(shared_ptr<Neuron> items1, shared_ptr<Neuron> items2) {
 	item2 = items2;
 }
 
+///뉴런 1의 출력 값을 뉴런 2로 이동시킴
 void Relation::SendValue() {
 	item2->prevalues->push_back(item1->value * strength);
 }
 void Relation::ChangeStrength(float errRating) {
 
-	strength = strength - (((item1->value * strength)/item2->prevalue) * errRating) * Consts::learningRate;
+	strength = strength - ((item1->value * strength) * errRating) * Consts::learningRate;
 }

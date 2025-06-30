@@ -4,7 +4,7 @@
 #include <memory>
 
 using namespace std;
-
+//다른 뉴런들에게서 받은 출력값들의 합을 tanh함수에 넣어 정규화 후, value에 넣어줌.
 void Neuron::setValue()
 {
 	float sum = 0;

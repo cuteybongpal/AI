@@ -21,8 +21,11 @@ list<shared_ptr<Neuron>> hiddenLayer1 = list<shared_ptr<Neuron>>();
 list<shared_ptr<Neuron>> hiddenLayer2 = list<shared_ptr<Neuron>>();
 list<shared_ptr<Neuron>> outputLayer = list<shared_ptr<Neuron>>();
 
+vector<int> results = vector<int>();
+vector<int> answers = vector<int>();
+
 void Setup();
-int classifyNumber();
+void classifyNumber(const char* path);
 float getAccuracy();
 
 int main()
@@ -30,7 +33,7 @@ int main()
     //초기 세팅
     Setup();
     //가중치를 통해 숫자 분류
-     
+    classifyNumber("../training/0/1000.png");
     //역전파(traning상태일때만)
 
 }
@@ -57,6 +60,7 @@ void Setup()
 
     int index = 0;
     vector<float> strengths = Strength::LoadStrength(0);
+
     for (iter1 = inputLayer.begin(); iter1 != inputLayer.end(); iter1++)
     {
         list<shared_ptr<Neuron>>::iterator iter2;
@@ -65,7 +69,6 @@ void Setup()
         {
             shared_ptr<Relation> rel = make_shared<Relation>(*iter1, *iter2);
             rel->strength = strengths[index];
-            cout << strengths[index] << endl;
 
             iter1->get()->Forrelation->push_back(rel);
             iter2->get()->Backrelation->push_back(rel);
@@ -109,10 +112,52 @@ void Setup()
     }
 }
 
-int classifyNumber() 
+void classifyNumber(const char* path)
 {
-    
+    vector<float> imageVector = ImageLoader::LoadPNG(path);
+
+    list<shared_ptr<Neuron>>::iterator iter;
+    int index = 0;
+
+    for (iter = inputLayer.begin(); iter != inputLayer.end(); iter++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter;
+        selectedNeuron->value = imageVector[index];
+        index++;
+        
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+            iter2->get()->SendValue();
+    }
+
+    for (iter = hiddenLayer1.begin(); iter != hiddenLayer1.end(); iter++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter;
+        selectedNeuron->setValue();
+
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+            iter2->get()->SendValue();
+    }
+
+    for (iter = hiddenLayer2.begin(); iter != hiddenLayer2.end(); iter++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter;
+        selectedNeuron->setValue();
+
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+            iter2->get()->SendValue();
+    }
+    for (iter = outputLayer.begin(); iter != outputLayer.end(); iter++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter;
+        selectedNeuron->setValue();
+
+        cout << selectedNeuron->value << endl;
+    }
+
 }
 float getAccuracy() {
-
+    return 0;
 }

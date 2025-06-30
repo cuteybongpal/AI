@@ -2,12 +2,11 @@
 #include <vector>
 #include <string>
 #include "stb_image.h"
+#include <iostream>
 
 
-
-std::vector<float> ImageLoader::LoadPNG(char* path)
+std::vector<float> ImageLoader::LoadPNG(const char* path)
 {
-	const char* filepath = path; 
 	float* nomalizedImage = stbi_loadf(path, new int(28), new int(28), new int(1), 1);
 	std::vector<float> imageVec = std::vector<float>();
 
