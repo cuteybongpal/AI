@@ -50,5 +50,6 @@ namespace Strength {
             outfile << relations[i] << ',';
         }
         outfile.close();
+        cout << "파일 저장" << endl;
     }
 }

@@ -33,61 +33,22 @@ void back(int answer);
 
 int main()
 {
-    vector<float> vec1 = vector<float>();
-    for (int i = 0; i < 28; i++)
-        for (int j = 0; i < 15; j++) 
-        {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_real_distribution<float> dis(-0.5, 0.5);
-
-            float val = dis(gen);
-            vec1.push_back(val);
-        }
-    Strength::SaveStrength(0, vec1);
-
-    vector<float> vec2 = vector<float>();
-    for (int i = 0; i < 15; i++)
-        for (int i = 0; i < 15; i++)
-        {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_real_distribution<float> dis(-0.5, 0.5);
-
-            float val = dis(gen);
-            vec2.push_back(val);
-        }
-    Strength::SaveStrength(1, vec2);
-
-    vector<float> vec3 = vector<float>();
-    for (int i = 0; i < 15; i++)
-        for (int i = 0; i < 10; i++)
-        {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_real_distribution<float> dis(-0.5, 0.5);
-
-            float val = dis(gen);
-            vec3.push_back(val);
-        }
-    Strength::SaveStrength(2, vec3);
-
     //초기 세팅
-    //Setup();
+    Setup();
     ////가중치를 통해 숫자 분류
-    //for (int i = 0; i < 10; i++)
-    //{
-    //    for (int ii = 0; ii < 10; ii++)
-    //    {
-    //        string formatPath = format("../training/{:d}/{:d}.png", ii, i);
-    //        const char* path = formatPath.c_str();
+    for (int i = 0; i < 10; i++)
+    {
+        for (int ii = 0; ii < 10; ii++)
+        {
+            string formatPath = format("../training/{:d}/{:d}.png", ii, i);
+            const char* path = formatPath.c_str();
 
-    //        classifyNumber(path);
-    //        //역전파(traning상태일때만)
-    //        cout << "정답 :" << ii << endl;
-    //        back(ii);
-    //    }
-    //}
+            classifyNumber(path);
+            //역전파(traning상태일때만)
+            cout << "정답 :" << ii << endl;
+            back(ii);
+        }
+    }
 }
 
 void Setup()
@@ -226,12 +187,12 @@ void back(int answer)
         shared_ptr<Neuron> selectedNeuron = *iter1;
         float errorRating;
         if (index == answer)
-            errorRating = selectedNeuron -> value - 1;
+            errorRating = selectedNeuron->value - 1;
         else
             errorRating = selectedNeuron->value;
         index++;
 
-        
+
 
         list<shared_ptr<Relation>>::iterator iter2;
         for (iter2 = selectedNeuron->Backrelation->begin(); iter2 != selectedNeuron->Backrelation->end(); iter2++)
@@ -257,49 +218,47 @@ void back(int answer)
                 }
             }
         }
-
-        vector<float> relationS = vector<float>();
-        list<shared_ptr<Neuron>>::iterator iter1;
-        for (iter1 = inputLayer.begin(); iter1 != inputLayer.end(); iter1++)
-        {
-            shared_ptr<Neuron> selectedNeuron = *iter1;
-            list<shared_ptr<Relation>>::iterator iter2;
-            for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
-            {
-                shared_ptr<Relation> selectedNeuron = *iter2;
-                selectedNeuron->strength = selectedNeuron->changedStrength;
-                relationS.push_back(selectedNeuron->strength);
-            }
-        }
-        Strength::SaveStrength(0, relationS);
-
-        relationS = vector<float>();
-        for (iter1 = hiddenLayer1.begin(); iter1 != hiddenLayer1.end(); iter1++)
-        {
-            shared_ptr<Neuron> selectedNeuron = *iter1;
-            list<shared_ptr<Relation>>::iterator iter2;
-            for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
-            {
-                shared_ptr<Relation> selectedNeuron = *iter2;
-                selectedNeuron->strength = selectedNeuron->changedStrength;
-                relationS.push_back(selectedNeuron->strength);
-            }
-        }
-        Strength::SaveStrength(1, relationS);
-
-        relationS = vector<float>();
-        for (iter1 = hiddenLayer2.begin(); iter1 != hiddenLayer2.end(); iter1++)
-        {
-            shared_ptr<Neuron> selectedNeuron = *iter1;
-            list<shared_ptr<Relation>>::iterator iter2;
-            for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
-            {
-                shared_ptr<Relation> selectedNeuron = *iter2;
-                selectedNeuron->strength = selectedNeuron->changedStrength;
-                relationS.push_back(selectedNeuron->strength);
-            }
-        }
-        Strength::SaveStrength(2, relationS);
-
     }
+    vector<float> relationS = vector<float>();
+    for (iter1 = inputLayer.begin(); iter1 != inputLayer.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedNeuron = *iter2;
+            selectedNeuron->strength = selectedNeuron->changedStrength;
+            relationS.push_back(selectedNeuron->strength);
+        }
+    }
+    Strength::SaveStrength(0, relationS);
+
+    relationS = vector<float>();
+    for (iter1 = hiddenLayer1.begin(); iter1 != hiddenLayer1.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedNeuron = *iter2;
+            selectedNeuron->strength = selectedNeuron->changedStrength;
+            relationS.push_back(selectedNeuron->strength);
+        }
+    }
+    Strength::SaveStrength(1, relationS);
+
+    relationS = vector<float>();
+    for (iter1 = hiddenLayer2.begin(); iter1 != hiddenLayer2.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        list<shared_ptr<Relation>>::iterator iter2;
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedNeuron = *iter2;
+            selectedNeuron->strength = selectedNeuron->changedStrength;
+            relationS.push_back(selectedNeuron->strength);
+        }
+    }
+    Strength::SaveStrength(2, relationS);
+        
 }
