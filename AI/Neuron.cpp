@@ -17,6 +17,7 @@ void Neuron::setValue()
 	float value = tanh(sum);
 
 	this -> value = value;
+	prevalues->clear();
 }
 
 Neuron::Neuron() {

@@ -35,20 +35,29 @@ int main()
 {
     //초기 세팅
     Setup();
-    ////가중치를 통해 숫자 분류
-    for (int i = 0; i < 10; i++)
-    {
-        for (int ii = 0; ii < 10; ii++)
-        {
-            string formatPath = format("../training/{:d}/{:d}.png", ii, i);
-            const char* path = formatPath.c_str();
+    //가중치를 통해 숫자 분류
+    string formatPath = format("../training/{:d}/{:d}.png", 2, 0);
+    const char* path = formatPath.c_str();
 
-            classifyNumber(path);
-            //역전파(traning상태일때만)
-            cout << "정답 :" << ii << endl;
-            back(ii);
-        }
-    }
+    classifyNumber(path);
+    ////역전파(traning상태일때만)
+    cout << "정답 :" << 0 << endl;
+
+    
+    //for (int filename = 0; filename < 10; filename++)
+    //{
+    //    for (int answer = 0; answer < 10; answer++)
+    //    {
+    //        string formatPath = format("../training/{:d}/{:d}.png", answer, filename);
+    //        const char* path = formatPath.c_str();
+
+    //        classifyNumber(path);
+    //        //역전파(traning상태일때만)
+    //        cout << "정답 :" << answer << endl;
+    //        back(answer);
+    //    }
+    //}
+
 }
 
 void Setup()
@@ -181,42 +190,84 @@ float getAccuracy() {
 void back(int answer)
 {
     list<shared_ptr<Neuron>>::iterator iter1;
+    vector<float> outputDelta = vector<float>();
+    vector<float> hiddenLayer2Delta = vector<float>();
+    vector<float> hiddenLayer1Delta = vector<float>();
+
     int index = 0;
     for (iter1 = outputLayer.begin(); iter1 != outputLayer.end(); iter1++)
     {
-        shared_ptr<Neuron> selectedNeuron = *iter1;
-        float errorRating;
         if (index == answer)
-            errorRating = selectedNeuron->value - 1;
+            outputDelta.push_back(iter1->get() ->value - 1);
         else
-            errorRating = selectedNeuron->value;
-        index++;
-
-
-
+            outputDelta.push_back(iter1->get()->value);
+    }
+    for (iter1 = hiddenLayer2.begin(); iter1 != hiddenLayer2.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        float sum = 0;
         list<shared_ptr<Relation>>::iterator iter2;
-        for (iter2 = selectedNeuron->Backrelation->begin(); iter2 != selectedNeuron->Backrelation->end(); iter2++)
+        index = 0;
+        //해당 뉴런이 출력 값에 준 영향을 모두 더하기
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            sum += iter2->get()->strength * outputDelta[index];
+            index++;
+        }
+
+        float ErrorRating = sum * (1 - tanh(selectedNeuron->value) * tanh(selectedNeuron->value));
+        hiddenLayer2Delta.push_back(ErrorRating);
+        //ㄹㅇ 역전파 로직 굉장히 중요함.
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
         {
             shared_ptr<Relation> selectedRelation = *iter2;
-            float errorRating2 = errorRating * selectedRelation->strength;
 
-            selectedRelation->ChangeStrength(errorRating2);
-            list<shared_ptr<Relation>>::iterator iter3;
-            for (iter3 = selectedRelation->item1->Backrelation->begin(); iter3 != selectedRelation->item1->Backrelation->end(); iter3++)
-            {
-                shared_ptr<Relation> selectedRelation = *iter3;
-                float errorRating3 = errorRating2 * selectedRelation->strength;
+            selectedRelation->ChangeStrength(ErrorRating);
+        }
+    }
+    for (iter1 = hiddenLayer1.begin(); iter1 != hiddenLayer1.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        float sum = 0;
+        list<shared_ptr<Relation>>::iterator iter2;
+        index = 0;
+        //해당 뉴런이 출력 값에 준 영향을 모두 더하기
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            sum += iter2->get()->strength * hiddenLayer2Delta[index];
+            index++;
+        }
 
-                selectedRelation->ChangeStrength(errorRating3);
-                list<shared_ptr<Relation>>::iterator iter4;
-                for (iter4 = selectedRelation->item1->Backrelation->begin(); iter4 != selectedRelation->item1->Backrelation->end(); iter4++)
-                {
-                    shared_ptr<Relation> selectedRelation = *iter4;
-                    float errorRating4 = errorRating3 * selectedRelation->strength;
+        float ErrorRating = sum * (1 - tanh(selectedNeuron->value) * tanh(selectedNeuron->value));
+        hiddenLayer1Delta.push_back(ErrorRating);
+        //ㄹㅇ 역전파 로직 굉장히 중요함.
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedRelation = *iter2;
 
-                    selectedRelation->ChangeStrength(errorRating3);
-                }
-            }
+            selectedRelation->ChangeStrength(ErrorRating);
+        }
+    }
+    for (iter1 = inputLayer.begin(); iter1 != inputLayer.end(); iter1++)
+    {
+        shared_ptr<Neuron> selectedNeuron = *iter1;
+        float sum = 0;
+        list<shared_ptr<Relation>>::iterator iter2;
+        index = 0;
+        //해당 뉴런이 출력 값에 준 영향을 모두 더하기
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            sum += iter2->get()->strength * hiddenLayer1Delta[index];
+            index++;
+        }
+
+        float ErrorRating = sum * (1 - tanh(selectedNeuron->value) * tanh(selectedNeuron->value));
+        //ㄹㅇ 역전파 로직 굉장히 중요함.
+        for (iter2 = selectedNeuron->Forrelation->begin(); iter2 != selectedNeuron->Forrelation->end(); iter2++)
+        {
+            shared_ptr<Relation> selectedRelation = *iter2;
+
+            selectedRelation->ChangeStrength(ErrorRating);
         }
     }
     vector<float> relationS = vector<float>();
@@ -228,6 +279,7 @@ void back(int answer)
         {
             shared_ptr<Relation> selectedNeuron = *iter2;
             selectedNeuron->strength = selectedNeuron->changedStrength;
+            selectedNeuron->changedStrength = 0;
             relationS.push_back(selectedNeuron->strength);
         }
     }
@@ -242,6 +294,7 @@ void back(int answer)
         {
             shared_ptr<Relation> selectedNeuron = *iter2;
             selectedNeuron->strength = selectedNeuron->changedStrength;
+            selectedNeuron->changedStrength = 0;
             relationS.push_back(selectedNeuron->strength);
         }
     }
@@ -256,9 +309,17 @@ void back(int answer)
         {
             shared_ptr<Relation> selectedNeuron = *iter2;
             selectedNeuron->strength = selectedNeuron->changedStrength;
+            selectedNeuron->changedStrength = 0;
             relationS.push_back(selectedNeuron->strength);
         }
     }
     Strength::SaveStrength(2, relationS);
-        
+
+    for (iter1 = outputLayer.begin(); iter1 != outputLayer.end(); iter1++)
+    {
+        shared_ptr<Neuron> n = *iter1;
+
+        n->prevalues->clear();
+        n->value = 0;
+    }
 }
