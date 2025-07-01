@@ -17,5 +17,5 @@ void Relation::SendValue() {
 }
 void Relation::ChangeStrength(float errRating) {
 
-	changedStrength = strength - ((item1->value * strength) * errRating) * Consts::learningRate;
+	changedStrength = strength - (((item1->value * strength) * errRating) * Consts::learningRate);
 }

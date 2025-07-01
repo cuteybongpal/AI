@@ -12,8 +12,9 @@
 #include <direct.h>
 #include "Strength.h"
 #include <filesystem>
-#include <fstream>
+#include <format>
 #include <random>
+#include <ostream>
 
 using namespace std;
 
@@ -32,12 +33,61 @@ void back(int answer);
 
 int main()
 {
+    vector<float> vec1 = vector<float>();
+    for (int i = 0; i < 28; i++)
+        for (int j = 0; i < 15; j++) 
+        {
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<float> dis(-0.5, 0.5);
+
+            float val = dis(gen);
+            vec1.push_back(val);
+        }
+    Strength::SaveStrength(0, vec1);
+
+    vector<float> vec2 = vector<float>();
+    for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 15; i++)
+        {
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<float> dis(-0.5, 0.5);
+
+            float val = dis(gen);
+            vec2.push_back(val);
+        }
+    Strength::SaveStrength(1, vec2);
+
+    vector<float> vec3 = vector<float>();
+    for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 10; i++)
+        {
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_real_distribution<float> dis(-0.5, 0.5);
+
+            float val = dis(gen);
+            vec3.push_back(val);
+        }
+    Strength::SaveStrength(2, vec3);
+
     //초기 세팅
-    Setup();
-    //가중치를 통해 숫자 분류
-    classifyNumber("../training/0/1000.png");
-    //역전파(traning상태일때만)
-    //back(0);
+    //Setup();
+    ////가중치를 통해 숫자 분류
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    for (int ii = 0; ii < 10; ii++)
+    //    {
+    //        string formatPath = format("../training/{:d}/{:d}.png", ii, i);
+    //        const char* path = formatPath.c_str();
+
+    //        classifyNumber(path);
+    //        //역전파(traning상태일때만)
+    //        cout << "정답 :" << ii << endl;
+    //        back(ii);
+    //    }
+    //}
 }
 
 void Setup()
