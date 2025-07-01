@@ -38,7 +38,7 @@ namespace Strength {
         return vec;
     }
 
-    void SaveStrength(int layerIndex, vector<Relation> relations)
+    void SaveStrength(int layerIndex, vector<float> relations)
     {
         //todo : 학습 후 바뀐 가중치를 바꾸기
         
@@ -47,7 +47,7 @@ namespace Strength {
 
         for (int i = 0; i < relations.size(); i++)
         {
-            outfile << relations[i].strength << ',';
+            outfile << relations[i] << ',';
         }
         outfile.close();
     }
